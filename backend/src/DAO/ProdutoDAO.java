@@ -1,8 +1,9 @@
-package main.java.com.vaapu.dao;
+package DAO;
 
 import java.util.List;
 
-import main.java.com.vaapu.model.Produto;
+import entity.Produto;
+
 
 public interface ProdutoDAO {
     List<Produto> listarProdutos();

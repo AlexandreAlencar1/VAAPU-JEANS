@@ -1,13 +1,12 @@
-package main.java.com.vaapu;
-
 import java.util.List;
 
-import main.java.com.vaapu.dao.ProdutoDAO;
-import main.java.com.vaapu.model.Produto;
-import main.java.com.vaapu.dao.ProdutoDAOImpl;
+import DAO.ProdutoDAO;
+import DAO.ProdutoDAOImpl;
+import entity.Produto;
 
 
-public class Main {
+
+public class App {
     public static void main(String[] args) {
         ProdutoDAO produtoDAO = new ProdutoDAOImpl();
 
