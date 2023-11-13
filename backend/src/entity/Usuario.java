@@ -1,4 +1,4 @@
-package main.java.com.vaapu.model;
+package entity;
 
 import java.time.LocalDate;
 

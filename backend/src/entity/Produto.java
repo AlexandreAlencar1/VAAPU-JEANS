@@ -1,4 +1,4 @@
-package main.java.com.vaapu.model;
+package entity;
 
 public class Produto {
     private String descricao;

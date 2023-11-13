@@ -1,4 +1,4 @@
-package main.java.com.vaapu.dao;
+package DAO;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -11,13 +11,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import entity.Usuario;
 
-import main.java.com.vaapu.model.Usuario;
+
 
 public class UsuarioDAOImpl implements UsuarioDAO {
-    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
-    private static final String USER = "sa";
-    private static final String PASSWORD = "";
+    private static final String URL = "jdbc:mysql://localhost:3306/vaapu_bd";
+    private static final String USER = "root";
+    private static final String PASSWORD = "root";
     private static final String TABLE_NAME = "usuarios";
 
 

@@ -1,7 +1,8 @@
-package main.java.com.vaapu.dao;
+package DAO;
 
 import java.util.List;
-import main.java.com.vaapu.model.Usuario;
+
+import entity.Usuario;
 
 public interface UsuarioDAO {
     List<Usuario> listarUsuarios();
