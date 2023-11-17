@@ -4,8 +4,10 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>VAAPU Produtos :)</title>
-        <link rel="stylesheet" type="text/css" href="../cadastro.css" />
+        <link rel="stylesheet" type="text/css" href="../VAAPU-JEANS/vaapu.css" />
         <link rel="stylesheet" type="text/css" href="../products/produtos.css" />
+        <link rel="stylesheet" type="text/css" href="./adm.css" />
+        
         <!--icones -->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
         <link rel="shortcut icon" href="#" type="image/x-icon">
@@ -22,14 +24,15 @@
             </div>
             <!--nav lista-->
             <ul class="navbar">
-                <li><a href="../trabalho agil.html">Inicio</a></li>
-                <li><a href="../trabalho agil.html">Populares</a></li>
-                <li><a href="#about">Sobre</a></li>
-                <li><a href="./produtos.html">Produtos</a></li>
-                <li><a href="../vendedor/admIndex.html">Vender Produtos </a></li>
+                <li><a href="#home">Inicio</a></li>
+                <li><a href="#popular">Populares</a></li>
+                <li><a href="">Sobre</a></li>
+                <li><a href="#produtos">Produtos</a></li>
+                <li><a href="../vendedor/admIndex.html">Meus Produtos </a></li>
+
             </ul>
             <!--logo-->
-            <a href="../trabalho agil.html" class="logo">
+            <a href="../VAAPU-JEANS/vaapu-index.html" class="logo">
                 VAAPU<span>.</span>
             </a>
             <!--nav icones-->
@@ -38,33 +41,38 @@
                 <i class='bx bx-cart-alt' id="cart-icon"></i>
                 <!--icone usuario-->
                 <i class='bx bx-user' id="user-icon"></i>
+                <!--icone cadastro-->
+                <i class='bx bx-user-plus' id="more-user"></i>
             </div>
             <!--carrrinho de produtos-->
-
             <div class="cart">
                 <div class="cart-content">
-                   <div class="cart-box">
-                        <img src="../images/1.png" alt="" class="cart-img">
-                        <div class="detail-box">
-                            <div class="cart-product-title">jaueta 01</div>
-                            <div class="cart-price">R$80</div>
-                            <input type="number" value="1" class="cart-quantity">
+                    <!--produto 1-->
+                    <div class="cart-box">
+                        <img src="./images/cal_fem_01.jpg" alt="">
+                        <div class="cart-text">
+                            <h3>Calça Feminina 01</h3>
+                            <span>R$ 80</span>
+                            <span>x1</span>
                         </div>
-
-                        <i class="bx bxs-trash-alt cart-remove"></i>
-                   </div>
-                    
-                
-                <!--total-->
-                <div class='total'>
-                    <div class="total-title">Total</div>
-                    <div class="total-price">R$0</div>
+                        <i class='bx bx-trash' ></i>
+                    </div>
+                     <!--produto 2-->
+                     <div class="cart-box">
+                        <img src="./images/cal_fem_02.jpg" alt="">
+                        <div class="cart-text">
+                            <h3>Calça Feminina 02</h3>
+                            <span>R$ 90</span>
+                            <span>x1</span>
+                        </div>
+                        <i class='bx bx-trash' ></i>
+                    </div>
+                    <div class="total">
+                        <h3>2 Items</h3>
+                        <span>Total: R$170</span>
+                    </div>
+                    <a href="#" class="btn">Realizar pagamento</a> 
                 </div>
-                <!--BTN Comprar-->
-                <button type="button" class="btn-buy">Comprar agora</button>
-                <!--fechar carrinnho-->
-                <i class="bx bx-x" id="close-cart"></i>
-            </div>
             </div>
             <!--espaço para login -->
             <div class="login-form">
@@ -74,14 +82,28 @@
                     <input type="password" name="" placeholder="Senha" required>
                     <a href="#">Esqueci minha senha</a>
                     <input type="submit" value="Log In" class="btn">
-                    <a href="../criarConta/criarConta.html">Criar Conta</a>
+                    <a id="criarConta" href="">Criar Conta</a>
                     <h5>ou</h5>
                     <a href="#">fazer login com Google</a>
                 </form>
             </div>
-            
+            <!--espaço para cadastro-->
+            <div class="criar-form">
+                <form action="">
+                    <h2>Criar conta</h2>
+                    <input type="email" name="" placeholder="Seu Email..." required >
+                    <input type="text" name="" placeholder="CPF" required>
+                    <input type="password" name="" placeholder="Senha" required>
+                    <input type="password" name="" placeholder="Confirmar senha" required>
+                    <input type="submit" value="criar" class="btn">
+                    <a href="">ja tenho conta</a>
+                    <h5>ou</h5>
+                    <a href="#">Criar conta com Google</a>
+                </form>
+            </div>
         </div>
     </header>
+    
     <!--shopp produtinhos :)-->
     <section class="shop container">
         <h2 class="section-title">Bem vindo, admvendedor</h2>
@@ -139,6 +161,6 @@
         </div>
         
     </div>
-    <script src="../trabalhoagil.js"></script>
+    <script src="../VAAPU-JEANS/vaapu.js"></script>
 </body>
 </html>
