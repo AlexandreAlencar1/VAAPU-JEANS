@@ -2,6 +2,7 @@ package com.backend.controllers;
 
 import com.backend.models.Produto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.sun.net.httpserver.HttpExchange;
 
 import java.io.IOException;
@@ -16,25 +17,36 @@ public class ProdutosController {
     private static final String SENHA = "root";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public static void listarProdutos(HttpExchange exchange) throws IOException {
-        try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
-            String sql = "SELECT * FROM produtos";
-            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
-                List<Produto> produtos = new ArrayList<>();
-                while (rs.next()) {
-                    Produto produto = new Produto(
-                            rs.getInt("id"),
-                            rs.getString("nome"),
-                            rs.getString("tamanho"),
-                            rs.getInt("quantidade"),
-                            rs.getString("categoria"),
-                            rs.getDouble("preco"),
-                            rs.getString("imagem")
-                    );
-                    produtos.add(produto);
-                }
+    static {
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+    }
 
-                sendResponse(exchange, 200, "OK", objectMapper.writeValueAsString(produtos));
+    public static void listarProdutos(HttpExchange exchange) throws IOException {
+        try {
+            // Adiciona cabeçalhos CORS
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "GET, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+
+            try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
+                String sql = "SELECT * FROM produtos";
+                try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+                    List<Produto> produtos = new ArrayList<>();
+                    while (rs.next()) {
+                        Produto produto = new Produto(
+                                rs.getInt("id"),
+                                rs.getString("nome"),
+                                rs.getString("tamanho"),
+                                rs.getInt("quantidade"),
+                                rs.getString("categoria"),
+                                rs.getDouble("preco"),
+                                rs.getString("imagem")
+                        );
+                        produtos.add(produto);
+                    }
+
+                    sendResponse(exchange, 200, "OK", objectMapper.writeValueAsString(produtos));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

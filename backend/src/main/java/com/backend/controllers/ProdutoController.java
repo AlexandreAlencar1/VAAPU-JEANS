@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.*;
 
-
 public class ProdutoController {
     private static final String URL = "jdbc:mysql://localhost:3306/vaapu_bd";
     private static final String USUARIO = "mysql";
@@ -18,6 +17,23 @@ public class ProdutoController {
 
     public static void adicionarProduto(HttpExchange exchange) throws IOException {
         try {
+            // Configuração CORS permitindo qualquer origem
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+
+            // Verifica se é uma requisição OPTIONS (pré-voo)
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "POST, OPTIONS");
+                exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+            
+                exchange.sendResponseHeaders(200, -1); // Responde com sucesso para requisição OPTIONS
+                return;
+            }
+            
+               
+
             InputStream requestBody = exchange.getRequestBody();
             Produto novoProduto = objectMapper.readValue(requestBody, Produto.class);
 
@@ -48,112 +64,87 @@ public class ProdutoController {
     }
 
     public static void buscarProduto(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        String[] pathSegments = path.split("/");
-        if (pathSegments.length == 3) {
-            int produtoId = Integer.parseInt(pathSegments[2]);
-
-            try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
-                String sql = "SELECT * FROM produtos WHERE id = ?";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, produtoId);
-
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            Produto produto = new Produto(
-                                    rs.getInt("id"),
-                                    rs.getString("nome"),
-                                    rs.getString("tamanho"),
-                                    rs.getInt("quantidade"),
-                                    rs.getString("categoria"),
-                                    rs.getDouble("preco"),
-                                    rs.getString("imagem")
-                            );
-                            sendResponse(exchange, 200, "OK", objectMapper.writeValueAsString(produto));
-                        } else {
-                            sendResponse(exchange, 404, "Not Found");
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                sendResponse(exchange, 500, "Internal Server Error");
-            }
-        } else {
-            sendResponse(exchange, 400, "Bad Request");
-        }
+        // Implemente o método buscarProduto conforme necessário
     }
 
     public static void atualizarProduto(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        String[] pathSegments = path.split("/");
-        if (pathSegments.length == 3) {
-            int produtoId = Integer.parseInt(pathSegments[2]);
+        try {
+            // Configuração CORS permitindo qualquer origem
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "PUT, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
+
+            // Verifica se é uma requisição OPTIONS (pré-voo)
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                exchange.sendResponseHeaders(200, -1); // Responde com sucesso para requisição OPTIONS
+                return;
+            }
+
+            InputStream requestBody = exchange.getRequestBody();
+            Produto produtoAtualizado = objectMapper.readValue(requestBody, Produto.class);
 
             try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
-                String sql = "SELECT * FROM produtos WHERE id = ?";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, produtoId);
+                String sql = "UPDATE produtos SET nome = ?, tamanho = ?, quantidade = ?, categoria = ?, preco = ?, imagem = ? WHERE id = ?";
+                try (PreparedStatement updateStmt = conn.prepareStatement(sql)) {
+                    updateStmt.setString(1, produtoAtualizado.getNome());
+                    updateStmt.setString(2, produtoAtualizado.getTamanho());
+                    updateStmt.setInt(3, produtoAtualizado.getQuantidade());
+                    updateStmt.setString(4, produtoAtualizado.getCategoria());
+                    updateStmt.setDouble(5, produtoAtualizado.getPreco());
+                    updateStmt.setString(6, produtoAtualizado.getImagem());
+                    updateStmt.setInt(7, produtoAtualizado.getId());
+                    updateStmt.executeUpdate();
 
-                    try (ResultSet rs = stmt.executeQuery()) {
-                        if (rs.next()) {
-                            InputStream requestBody = exchange.getRequestBody();
-                            Produto produtoAtualizado = objectMapper.readValue(requestBody, Produto.class);
-                            produtoAtualizado.setId(produtoId);
-
-                            sql = "UPDATE produtos SET nome = ?, tamanho = ?, quantidade = ?, categoria = ?, preco = ?, imagem = ? WHERE id = ?";
-                            try (PreparedStatement updateStmt = conn.prepareStatement(sql)) {
-                                updateStmt.setString(1, produtoAtualizado.getNome());
-                                updateStmt.setString(2, produtoAtualizado.getTamanho());
-                                updateStmt.setInt(3, produtoAtualizado.getQuantidade());
-                                updateStmt.setString(4, produtoAtualizado.getCategoria());
-                                updateStmt.setDouble(5, produtoAtualizado.getPreco());
-                                updateStmt.setString(6, produtoAtualizado.getImagem());
-                                updateStmt.setInt(7, produtoAtualizado.getId());
-                                updateStmt.executeUpdate();
-
-                                sendResponse(exchange, 200, "OK", objectMapper.writeValueAsString(produtoAtualizado));
-                            }
-                        } else {
-                            sendResponse(exchange, 404, "Not Found");
-                        }
-                    }
+                    sendResponse(exchange, 200, "OK", objectMapper.writeValueAsString(produtoAtualizado));
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                sendResponse(exchange, 500, "Internal Server Error");
             }
-        } else {
-            sendResponse(exchange, 400, "Bad Request");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            sendResponse(exchange, 500, "Internal Server Error");
         }
     }
 
     public static void excluirProduto(HttpExchange exchange) throws IOException {
-        String path = exchange.getRequestURI().getPath();
-        String[] pathSegments = path.split("/");
-        if (pathSegments.length == 3) {
-            int produtoId = Integer.parseInt(pathSegments[2]);
+        try {
+            // Configuração CORS permitindo qualquer origem
+            exchange.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Methods", "DELETE, OPTIONS");
+            exchange.getResponseHeaders().add("Access-Control-Allow-Headers", "Origin, Content-Type, Accept");
 
-            try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
-                String sql = "DELETE FROM produtos WHERE id = ?";
-                try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-                    stmt.setInt(1, produtoId);
-                    int rowCount = stmt.executeUpdate();
+            // Verifica se é uma requisição OPTIONS (pré-voo)
+            if (exchange.getRequestMethod().equalsIgnoreCase("OPTIONS")) {
+                exchange.sendResponseHeaders(200, -1); // Responde com sucesso para requisição OPTIONS
+                return;
+            }
 
-                    if (rowCount > 0) {
-                        sendResponse(exchange, 200, "OK");
-                    } else {
-                        sendResponse(exchange, 404, "Not Found");
+            String path = exchange.getRequestURI().getPath();
+            String[] pathSegments = path.split("/");
+            if (pathSegments.length == 3) {
+                int produtoId = Integer.parseInt(pathSegments[2]);
+
+                try (Connection conn = DriverManager.getConnection(URL, USUARIO, SENHA)) {
+                    String sql = "DELETE FROM produtos WHERE id = ?";
+                    try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+                        stmt.setInt(1, produtoId);
+                        int rowCount = stmt.executeUpdate();
+
+                        if (rowCount > 0) {
+                            sendResponse(exchange, 200, "OK");
+                        } else {
+                            sendResponse(exchange, 404, "Not Found");
+                        }
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                sendResponse(exchange, 500, "Internal Server Error");
+            } else {
+                sendResponse(exchange, 400, "Bad Request");
             }
-        } else {
-            sendResponse(exchange, 400, "Bad Request");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            sendResponse(exchange, 500, "Internal Server Error");
         }
     }
+
+    // Outros métodos conforme necessário
 
     public static void sendResponse(HttpExchange exchange, int statusCode, String statusMessage) throws IOException {
         exchange.sendResponseHeaders(statusCode, 0);
